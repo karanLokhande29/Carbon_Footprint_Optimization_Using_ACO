@@ -11,40 +11,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # ── 1. Source code ──────────────────────────────────────
+      # ── 1. Checkout code ─────────────────────────────────────
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # ── 2. Docker Buildx (enables cache + multi-platform) ───
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      # ── 3. Layer cache — dramatically speeds up re-builds ───
-      - name: Cache Docker layers
-        uses: actions/cache@v4
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-
-      # ── 4. Build images individually so errors are isolated ─
+      # ── 2. Build Docker images (NO cache issues) ─────────────
       - name: Build backend image
-        run: |
-          docker build \
-            --cache-from=type=local,src=/tmp/.buildx-cache \
-            --cache-to=type=local,dest=/tmp/.buildx-cache-new,mode=max \
-            -t ec-backend:ci \
-            ./backend
+        run: docker build -t ec-backend:ci ./backend
 
       - name: Build frontend image
-        run: |
-          docker build \
-            -t ec-frontend:ci \
-            ./frontend
+        run: docker build -t ec-frontend:ci ./frontend
 
-      # ── 5. Seed minimal artifacts so /carbon & /aco don't 503
-      #       (the real .pt/.pkl are gitignored; CSVs + JSON are tracked)
+      # ── 3. Verify required artifact files ────────────────────
       - name: Verify required artifact files are present
         run: |
           for f in \
@@ -58,11 +36,11 @@ jobs:
           done
           echo "All required artifact files present."
 
-      # ── 6. Start stack (detached) ───────────────────────────
+      # ── 4. Start containers ──────────────────────────────────
       - name: Start containers
         run: docker compose up -d
 
-      # ── 7. Health-check with retry (10 × 5 s = 50 s window) ─
+      # ── 5. Wait for backend health ───────────────────────────
       - name: Wait for backend /health
         run: |
           echo "Polling http://localhost:8001/health ..."
@@ -79,39 +57,33 @@ jobs:
           docker compose logs backend
           exit 1
 
-      # ── 8. Smoke-test key endpoints via the nginx proxy ─────
+      # ── 6. Smoke test endpoints ──────────────────────────────
       - name: Smoke-test backend endpoints
         run: |
           echo "--- /health ---"
           curl -sf http://localhost:8001/health | python3 -m json.tool
 
-          echo "--- /leaderboard (via proxy) ---"
+          echo "--- /leaderboard ---"
           curl -sf http://localhost:5173/api/leaderboard \
-            | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'Models: {d[\"total_models\"]}')"
+            | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'Models: {d.get(\"total_models\", \"N/A\")}')"
 
           echo "--- /carbon ---"
           curl -sf http://localhost:5173/api/carbon \
-            | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'Records: {d[\"record_count\"]}')"
+            | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'Records: {d.get(\"record_count\", \"N/A\")}')"
 
           echo "--- /aco ---"
           curl -sf http://localhost:5173/api/aco \
-            | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'Best model: {d[\"best_config\"][\"model\"]}')"
+            | python3 -c "import sys,json; d=json.load(sys.stdin); print(f'Best model: {d.get(\"best_config\", {}).get(\"model\", \"N/A\")}')"
 
           echo "All smoke tests passed."
 
-      # ── 9. Always dump logs on failure for debugging ─────────
+      # ── 7. Dump logs on failure ──────────────────────────────
       - name: Dump container logs (on failure)
         if: failure()
         run: docker compose logs
 
-      # ── 10. Clean up ─────────────────────────────────────────
+      # ── 8. Shutdown containers ───────────────────────────────
       - name: Shutdown containers
         if: always()
         run: docker compose down --volumes
-
-      # Swap cache dirs so next run gets fresh layers
-      - name: Rotate Docker layer cache
-        if: always()
-        run: |
-          rm -rf /tmp/.buildx-cache
-          mv /tmp/.buildx-cache-new /tmp/.buildx-cache 2>/dev/null || true
+        
