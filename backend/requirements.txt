@@ -1,0 +1,34 @@
+# EC_Project — FastAPI Backend Dependencies
+# Install with:  pip install -r requirements.txt
+#
+# Notes:
+#   - torch / torchvision: install the CUDA variant from pytorch.org if GPU needed
+#     Example: pip install torch torchvision --index-url https://download.pytorch.org/whl/cu118
+#   - timm: only --no-deps is needed at runtime (torch already pulled in)
+#   - xgboost: GPU (cuda) support is handled automatically when cuda device is present
+
+fastapi>=0.111.0
+uvicorn[standard]>=0.29.0
+python-multipart>=0.0.9
+pydantic>=2.6.0
+pydantic-settings>=2.2.0
+
+# Deep-learning
+torch>=2.0.0
+torchvision>=0.15.0
+timm>=0.9.16
+
+# Classical ML
+# PINNED to training version — models were pickled with sklearn 1.6.1.
+# Upgrading past this will trigger InconsistentVersionWarning and may
+# silently change predict_proba / decision_function behaviour.
+scikit-learn==1.6.1
+xgboost>=2.0.0
+joblib>=1.3.0
+
+# Data
+pandas>=2.1.0
+numpy>=1.24.0
+
+# Image handling
+Pillow>=10.0.0

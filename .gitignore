@@ -1,0 +1,59 @@
+# ── Python ───────────────────────────────────────────────
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.env
+.env.*
+.venv/
+venv/
+
+# ── Node ─────────────────────────────────────────────────
+node_modules/
+dist/
+build/
+
+# ── OS ───────────────────────────────────────────────────
+.DS_Store
+Thumbs.db
+
+# ── Logs ─────────────────────────────────────────────────
+*.log
+
+# ── Docker ───────────────────────────────────────────────
+*.tar
+
+# ── IDE ──────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+
+# ── Windows/OS-specific scripts ──────────────────────────
+copy_images.ps1
+backend/start.ps1
+
+# ── Draft / non-essential markdown ───────────────────────
+presentation_slides.md
+
+# ── MODEL ARTIFACTS (CRITICAL — prevent repo > 1 GB) ─────
+# Large PyTorch checkpoint files
+carbon_aco_artifacts/*.pt
+carbon_aco_artifacts/*_epoch*.pt
+
+# Pickle model files
+carbon_aco_artifacts/*.pkl
+
+# ── BULK EMISSION LOGS (hundreds of small per-epoch CSVs) ─
+# Per-epoch emission CSVs  e.g. resnet50_e12_emissions.csv
+carbon_aco_artifacts/*_e[0-9]*_emissions.csv
+carbon_aco_artifacts/*_e[0-9][0-9]*_emissions.csv
+
+# Per-checkpoint total CSVs  e.g. resnet50_total_emissions.csv
+carbon_aco_artifacts/*_total_emissions.csv
+
+# ── KEEP (tracked by git) ─────────────────────────────────
+# carbon_aco_artifacts/leaderboard.json
+# carbon_aco_artifacts/aco_logs.json
+# carbon_aco_artifacts/emissions.csv
+# carbon_aco_artifacts/*_training_curves.json
+# carbon_aco_artifacts/*_per_class.json

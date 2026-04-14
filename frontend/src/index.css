@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@import "tailwindcss";
+
+:root {
+  --accent-dl: #38bdf8;
+  --accent-classical: #fbbf24;
+  --accent-green: #34d399;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { font-family: var(--font-sans); }
+
+body {
+  @apply bg-[#070b14] text-gray-100 antialiased;
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(56, 189, 248, 0.05), transparent 30%),
+    radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.04), transparent 30%);
+  min-height: 100vh;
+}
+
+/* scrollbar */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { @apply bg-gray-900; }
+::-webkit-scrollbar-thumb { @apply bg-gray-700 rounded-full; }
+
+/* recharts tooltip */
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  @apply !bg-gray-900/90 !border-gray-700/50 !backdrop-blur-md !shadow-[0_0_20px_rgba(0,0,0,0.5)] !rounded-2xl !text-gray-100 !text-sm;
+}
+
+/* glass card */
+.glass {
+  background: linear-gradient(145deg, rgba(30, 41, 59, 0.4) 0%, rgba(15, 23, 42, 0.7) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 8px 32px -4px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(16px);
+}
+
+/* chart export target */
+.chart-export { position: relative; }

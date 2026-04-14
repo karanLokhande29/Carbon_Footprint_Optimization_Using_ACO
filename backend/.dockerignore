@@ -1,0 +1,17 @@
+__pycache__
+*.pyc
+*.pyo
+.git
+.gitignore
+.env
+.env.*
+.venv
+venv
+*.egg-info
+dist
+build
+.DS_Store
+*.md
+start.ps1
+Dockerfile
+.dockerignore
