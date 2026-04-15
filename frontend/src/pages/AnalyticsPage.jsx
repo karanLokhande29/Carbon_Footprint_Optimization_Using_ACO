@@ -43,7 +43,7 @@ function CarbonTab() {
       </div>
 
       {/* Bar chart */}
-      <ChartCard title="CO₂ Emissions by Model">
+      <ChartCard title="CO₂ Emissions Model">
         {/* Adapt from by_model to match the leaderboard shape expected by EmissionBarChart */}
         <EmissionBarChart data={tableRows.map(r => ({ model: r.model_name, total_emission_kg: r.total_emission_kg, type: '' }))} />
       </ChartCard>
