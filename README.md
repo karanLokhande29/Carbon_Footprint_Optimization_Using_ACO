@@ -136,9 +136,9 @@ docker compose up --build
 
 | Service | URL |
 |---|---|
-| **Frontend** | http://localhost:5173 |
-| **Backend API** | http://localhost:8001 |
-| **API Docs** | http://localhost:8001/docs |
+| **Frontend** | [http://localhost:5173](https://carbon-frontend-1776188616.azurewebsites.net/) |
+| **Backend API** | [http://localhost:8001](https://carbon-backend-1776188616.azurewebsites.net/) |
+| **API Docs** | [http://localhost:8001/docs](https://carbon-backend-1776188616.azurewebsites.net/docs) |
 
 > **Note:** Model checkpoint files (`.pt`, `.pkl`) are not tracked in Git due to size. Place them in `carbon_aco_artifacts/` before running.
 
