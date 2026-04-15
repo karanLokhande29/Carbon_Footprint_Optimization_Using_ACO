@@ -128,7 +128,7 @@ Where each metric is normalized across all 7 models. **Confidence is not include
 ## Running with Docker
 
 ```bash
-git clone https://github.com/<your-username>/EC_Project.git
+git clone https://github.com/karanLokhande29/EC_Project.git
 cd EC_Project
 
 docker compose up --build
